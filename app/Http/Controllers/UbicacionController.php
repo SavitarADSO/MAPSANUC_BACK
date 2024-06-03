@@ -16,12 +16,19 @@ class UbicacionController extends Controller
      */
     public function index()
     {
-        $ubicaciones = Ubicacion::with('asociado:id,nombre_completo')->get(['id', 'vereda', 'nombre_finca', 'latitude', 'longitude', 'hectareas', 'tipo_finca', 'asociado_id']);
+        $ubicaciones = Ubicacion::with(['asociado:id,nombre_completo', 'asociado.producciones:asociado_id,categorías,productos'])->get(['id', 'vereda', 'nombre_finca', 'latitude', 'longitude', 'hectareas', 'tipo_finca', 'asociado_id']);
         
         foreach ($ubicaciones as $ubicacion) {
             $ubicacion->nombre = $ubicacion->asociado->nombre_completo;
+            $ubicacion->producciones = $ubicacion->asociado->producciones->map(function ($produccion) {
+                return [
+                    'categorias' => $produccion->categorías,
+                    'productos' => $produccion->productos
+                ];
+            });
             unset($ubicacion->asociado); 
         }
+
         return response()->json($ubicaciones);
     }
     

@@ -9,12 +9,13 @@ class Ubicacion extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
-
-    protected $table = 'ubicacions';
+    protected $fillable = [
+        'vereda', 'nombre_finca', 'latitude', 'longitude', 
+        'hectareas', 'tipo_finca', 'asociado_id'
+    ];
 
     public function asociado()
     {
-        return $this->belongsTo(Asociado::class, 'asociado_id', 'id');
+        return $this->belongsTo(Asociado::class);
     }
 }
